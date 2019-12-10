@@ -131,3 +131,4 @@ dmypy.json
 #custom
 #ignore praw.ini file
 praw.ini
+config.yaml
