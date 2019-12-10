@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#custom
+#ignore praw.ini file
+praw.ini
