@@ -1,0 +1,25 @@
+reddit:
+    subreddit:
+        - asubreddit 
+bot:
+    token: YOURTOKENHERE
+    timeout: 600
+messages:
+    request: REQUESTDETECTED
+    deny_retry: YOURENOTABLETOACCEPTYOURSELF
+    accept: ACCEPTED
+    deny: DENIED
+    group_intro: AGREETINGSMESSAGE
+parser:
+    accept:
+        - YES
+        - Yes
+    deny:
+        - No
+        - no
+    keywords:
+        - foto
+        - viernes
+        - bot
+        - bender
+        - futurama
