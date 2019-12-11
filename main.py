@@ -23,29 +23,29 @@ class OfftopicBotHandler(telepot.aio.helper.ChatHandler):
         print(msg)
         content_type,_,_ = telepot.glance(msg)
         if content_type == "text":
-            link = self.ri.get_image()
-            while link is None:
-                link = self.ri.get_image()
             if msg['text'] in self.keywords and not self.waiting_reponse:
                 self.user_request_id.append(msg['from']['id'])
                 self.waiting_reponse = True
-                await self.sender.sendMessage(self.cfg['messages']['request'])
+                await self.sender.sendMessage(self.cfg['messages']['request'],parse_mode="Markdown")
 
             elif msg['text'] in self.accept and self.waiting_reponse:
+                link = self.ri.get_image()
+                while link is None:
+                    link = self.ri.get_image()
                 if msg['from']['id'] in self.user_request_id:
-                    await self.sender.sendMessage(self.cfg['messages']['deny_retry'].format(msg['from']['username']))
+                    await self.sender.sendMessage(self.cfg['messages']['deny_retry'].format(msg['from']['username']),parse_mode="Markdown")
                 else:
-                    await self.sender.sendMessage(self.cfg['messages']['accept'])
+                    await self.sender.sendMessage(self.cfg['messages']['accept'],parse_mode="Markdown")
                     await self.sender.sendPhoto(self.ri.get_image())
                     self.waiting_reponse = False
             
             elif msg['text'] in self.deny and self.waiting_reponse:
-                await self.sender.sendMessage(self.cfg['messages']['deny'])
+                await self.sender.sendMessage(self.cfg['messages']['deny'],parse_mode="Markdown")
                 self.waiting_reponse = False
         elif content_type == "new_chat_member":
             me = await self.bot.getMe()
             if msg['new_chat_participant']['id'] == me['id']:
-                await self.sender.sendMessage(self.cfg['messages']['group_intro'])
+                await self.sender.sendMessage(self.cfg['messages']['group_intro'],parse_mode="Markdown")
 
 
 #Initialization
