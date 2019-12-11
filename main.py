@@ -21,25 +21,34 @@ class OfftopicBotHandler(telepot.aio.helper.ChatHandler):
 
     async def on_chat_message(self, msg):
         print(msg)
-        print(msg['chat']['id'])
-        if msg['text'] in self.keywords and not self.waiting_reponse:
-            self.user_request_id.append(msg['from']['id'])
-            self.waiting_reponse = True
-            await self.sender.sendMessage("Probando")
-            await self.sender.sendMessage(self.cfg['messages']['request'])
+        content_type,_,_ = telepot.glance(msg)
+        if content_type == "text":
+            link = self.ri.get_image()
+            while link is None:
+                link = self.ri.get_image()
+            if msg['text'] in self.keywords and not self.waiting_reponse:
+                self.user_request_id.append(msg['from']['id'])
+                self.waiting_reponse = True
+                await self.sender.sendMessage(self.cfg['messages']['request'])
 
-        elif msg['text'] in self.accept and self.waiting_reponse:
-            if msg['from']['id'] in self.user_request_id:
-                await self.sender.sendMessage(self.cfg['messages']['deny_retry'].format(msg['from']['username']))
-            else:
-                await self.sender.sendMessage(self.cfg['messages']['accept'])
-                await self.sender.sendPhoto(self.ri.get_image())
+            elif msg['text'] in self.accept and self.waiting_reponse:
+                if msg['from']['id'] in self.user_request_id:
+                    await self.sender.sendMessage(self.cfg['messages']['deny_retry'].format(msg['from']['username']))
+                else:
+                    await self.sender.sendMessage(self.cfg['messages']['accept'])
+                    await self.sender.sendPhoto(self.ri.get_image())
+                    self.waiting_reponse = False
+            
+            elif msg['text'] in self.deny and self.waiting_reponse:
+                await self.sender.sendMessage(self.cfg['messages']['deny'])
                 self.waiting_reponse = False
-        
-        elif msg['text'] in self.deny and self.waiting_reponse:
-            await self.sender.sendMessage(self.cfg['messages']['deny'])
-            self.waiting_reponse = False
+        elif content_type == "new_chat_member":
+            me = await self.bot.getMe()
+            if msg['new_chat_participant']['id'] == me['id']:
+                await self.sender.sendMessage(self.cfg['messages']['group_intro'])
 
+
+#Initialization
 with open("config.yaml", 'r') as yamlfile:
     cfg = yaml.safe_load(yamlfile)
 
@@ -55,6 +64,3 @@ loop.create_task(MessageLoop(bot).run_forever())
 print('Listening ...')
 
 loop.run_forever()
-
-#ri = Reddit_Interface()
-#print(ri.get_image())
