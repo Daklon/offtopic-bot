@@ -1,3 +1,4 @@
+import sys
 import yaml
 import asyncio
 import telepot
@@ -9,8 +10,8 @@ class OfftopicBotHandler(telepot.aio.helper.ChatHandler):
     def __init__(self, *args, **kwargs):
         super(OfftopicBotHandler, self).__init__(*args, **kwargs)
         self.request_user_id = None
-        self.ri = Reddit_Interface()
-        with open("config.yaml", 'r') as yamlfile:
+        self.ri = Reddit_Interface(sys.argv[2],sys.argv[3])
+        with open(sys.argv[1]+"/config.yaml", 'r') as yamlfile:
             self.cfg = yaml.safe_load(yamlfile)
         self.keywords = cfg['parser']['keywords']
         self.accept = cfg['parser']['accept']
@@ -49,7 +50,7 @@ class OfftopicBotHandler(telepot.aio.helper.ChatHandler):
 
 
 #Initialization
-with open("config.yaml", 'r') as yamlfile:
+with open(sys.argv[1]+"/config.yaml", 'r') as yamlfile:
     cfg = yaml.safe_load(yamlfile)
 
 TOKEN = cfg['bot']['token']

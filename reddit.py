@@ -6,14 +6,14 @@ import requests
 
 
 class Reddit_Interface():
-    def __init__(self):
+    def __init__(self,config_path,database_path):
         #create a reddit instance
-        with open("config.yaml", 'r') as yamlfile:
+        with open(config_path+"/config.yaml", 'r') as yamlfile:
             self.cfg = yaml.safe_load(yamlfile)
         self.reddit = praw.Reddit('offtopic-bot', user_agent='Linux:com.offtopic-bot:v0.1 (by /u/Daklon15)')
         self.subreddit = self.reddit.subreddit(self.cfg['reddit']['subreddit'][0])
         self.image_formats = ('jpg','png','gif','jpeg')
-        self.db = sqlite3.connect('database.sqlite')
+        self.db = sqlite3.connect(database_path+'/database.sqlite')
         self.cursor = self.db.cursor()
         self.check_database()
 

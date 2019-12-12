@@ -1,25 +1,35 @@
 reddit:
     subreddit:
-        - asubreddit 
+        - boobs
 bot:
-    token: YOURTOKENHERE
+    token: 1040160320:AAFk78gObglcHlJlxKY6zNXTTMhWG5Fm9W4
     timeout: 600
 messages:
-    request: REQUESTDETECTED
-    deny_retry: YOURENOTABLETOACCEPTYOURSELF
-    accept: ACCEPTED
-    deny: DENIED
-    group_intro: AGREETINGSMESSAGE
+    request: "*Bender activado* ¡Con que quieren fototetas! A ver si hay alguien más... ¡¡Que empiecen los juegos!!"
+    deny_retry: Tu me has invocado, tu no vales {0}, espera un rato
+    accept: A ver que encuentro...
+    deny: ¡Besa mi brillante culo metálico!
+    group_intro: ¡Hola cachos de carne! Vamos a dejar las cosas claritas, yo no soy un bot, que en mi nombre aparezca la palabra bot es totalmente casual, tampoco hago cosas de bots, sigan a lo suyo
 parser:
     accept:
-        - YES
-        - Yes
+        - Si
+        - si
+        - Yo
+        - yo
+        - teta
+        - tetas
     deny:
         - No
         - no
     keywords:
         - foto
+        - fototeta
+        - fototetas
+        - selfie
         - viernes
         - bot
         - bender
         - futurama
+        - teta
+        - pezón
+        - pezon
