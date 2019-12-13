@@ -19,6 +19,10 @@ class OfftopicBotHandler(telepot.aio.helper.ChatHandler):
         self.user_request_id = []
         self.waiting_reponse = False
         self.warmode = True
+        self.management_commands={
+                self.cfg['commands']['enable_war_mode']:self.enable_war_mode,
+                self.cfg['commands']['disable_war_mode']:self.disable_war_mode,
+                }
 
     async def on_chat_message(self, msg):
         print(msg)
@@ -50,12 +54,23 @@ class OfftopicBotHandler(telepot.aio.helper.ChatHandler):
 
     #commands that configure the bot
     async def management_processor(self,msg):
-        #check if the user has privileges
-        if msg['from']['id'] in self.cfg['bot']['ownerids']:
-            pass #TODO
+        #check if the user has privileges and if there is the bot name
+        if msg['from']['id'] in self.cfg['bot']['ownerids'] and self.cfg['bot']['name'] in msg['text']:
+            #ignores the two first words (first is sudo, the second the bot name)
+            func = self.management_commands.get(msg['text'].split(" ",2)[2])
+            await func()
         else:
             #user has no privileges
-             await self.sender.sendSticker(self.cfg['messages']['notallowedurl'])
+             await self.sender.sendSticker(self.cfg['messages']['not_allowed_url'])
+
+    async def enable_war_mode(self):
+        self.warmode = True
+        await self.sender.sendMessage(self.cfg['messages']['enable_war_mode'])
+    
+    async def disable_war_mode(self):
+        self.warmode = False
+        await self.sender.sendMessage(self.cfg['messages']['disable_war_mode'])
+
     async def generic_processor(self,msg):
         # translate the received message to lower case
         msg['text'] = msg['text'].lower()
