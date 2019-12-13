@@ -19,8 +19,8 @@ parser:
         - teta
         - tetas
     deny:
-        - No
-        - no
+        - "No"
+        - "no"
     keywords:
         - foto
         - fototeta
