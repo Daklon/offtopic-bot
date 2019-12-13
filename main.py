@@ -30,6 +30,8 @@ class OfftopicBotHandler(telepot.aio.helper.ChatHandler):
         content_type,_,_ = telepot.glance(msg)
         print(content_type)
         if content_type == "text":
+            # translate the received message to lower case
+            msg['text'] = msg['text'].lower()
             #if the message contains sudo its a management command
             if('sudo' in msg['text']):
                 await self.management_processor(msg)
@@ -72,28 +74,26 @@ class OfftopicBotHandler(telepot.aio.helper.ChatHandler):
         await self.sender.sendMessage(self.cfg['messages']['disable_war_mode'])
 
     async def generic_processor(self,msg):
-        # translate the received message to lower case
-        msg['text'] = msg['text'].lower()
         # if the message contains any keyword
         if any(word in msg['text'] for word in self.keywords) and not self.waiting_reponse:
             self.user_request_id.append(msg['from']['id'])
             self.waiting_reponse = True
             await self.sender.sendMessage(self.cfg['messages']['request'],parse_mode="Markdown")
-
+        #if the bot has ben called by other user and receives a afirmative response
         elif msg['text'] in self.accept and self.waiting_reponse:
-            if msg['from']['id'] in self.user_request_id:
+            if msg['from']['id'] in self.user_request_id:# if this user already has called the bot
                 await self.sender.sendMessage(self.cfg['messages']['deny_retry'].format(msg['from']['username']),parse_mode="Markdown")
-            else:
+            else:#sends a message and a photo
                 await self.sender.sendMessage(self.cfg['messages']['accept'],parse_mode="Markdown")
                 await self.sender.sendPhoto(self.request_image())
                 self.waiting_reponse = False
-            
+        #if the bot has been called by other user and receives a negative response
         elif msg['text'] in self.deny and self.waiting_reponse:
             await self.sender.sendMessage(self.cfg['messages']['deny'],parse_mode="Markdown")
             self.waiting_reponse = False
         
 
-#Initialization
+#This should be improved TODO
 with open(sys.argv[1]+"/config.yaml", 'r') as yamlfile:
     cfg = yaml.safe_load(yamlfile)
 
