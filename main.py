@@ -14,11 +14,12 @@ class OfftopicBotHandler(telepot.aio.helper.ChatHandler):
         with open(sys.argv[1]+"/config.yaml", 'r') as yamlfile:
             self.cfg = yaml.safe_load(yamlfile)
         self.keywords = cfg['parser']['keywords']
+        self.antibot_keywords = cfg['parser']['antibot']
         self.accept = cfg['parser']['accept']
         self.deny = cfg['parser']['deny']
         self.user_request_id = []
         self.waiting_reponse = False
-        self.warmode = False
+        self.warmode = True
         self.management_commands={
                 self.cfg['commands']['enable_war_mode']:self.enable_war_mode,
                 self.cfg['commands']['disable_war_mode']:self.disable_war_mode,
@@ -33,7 +34,7 @@ class OfftopicBotHandler(telepot.aio.helper.ChatHandler):
             # translate the received message to lower case
             msg['text'] = msg['text'].lower()
             #if the message contains sudo its a management command
-            if('sudo' in msg['text']):
+            if 'sudo' in msg['text'] and self.cfg['bot']['name'] in msg['text']:
                 await self.management_processor(msg)
             #process normal messages
             else:
@@ -57,7 +58,7 @@ class OfftopicBotHandler(telepot.aio.helper.ChatHandler):
     #commands that configure the bot
     async def management_processor(self,msg):
         #check if the user has privileges and if there is the bot name
-        if msg['from']['id'] in self.cfg['bot']['ownerids'] and self.cfg['bot']['name'] in msg['text']:
+        if msg['from']['id'] in self.cfg['bot']['ownerids']: 
             #ignores the two first words (first is sudo, the second the bot name)
             func = self.management_commands.get(msg['text'].split(" ",2)[2])
             await func()
@@ -91,6 +92,11 @@ class OfftopicBotHandler(telepot.aio.helper.ChatHandler):
         elif msg['text'] in self.deny and self.waiting_reponse:
             await self.sender.sendMessage(self.cfg['messages']['deny'],parse_mode="Markdown")
             self.waiting_reponse = False
+        
+        #if detect any command from other bot answer with a custom message and return a photo
+        elif any(word in msg['text'] for word in self.antibot_keywords) and self.warmode:
+            await self.sender.sendMessage(self.cfg['messages']['antibot'])
+            await self.sender.sendPhoto(self.request_image())
         
 
 #This should be improved TODO
