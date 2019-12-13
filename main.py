@@ -52,7 +52,7 @@ class OfftopicBotHandler(telepot.aio.helper.ChatHandler):
             if msg['new_chat_participant']['id'] == me['id']:
                 await self.sender.sendMessage(self.cfg['messages']['group_intro'],parse_mode="Markdown")
         # if the warmode is enabled and other bot send a photo, it will answer with two
-        elif (content_type == "photo" or content_type == "sticker") and self.warmode and not msg['from']['is_bot']:
+        elif (content_type == "photo" or content_type == "sticker") and self.warmode and msg['from']['is_bot']:
             await self.sender.sendMessage(self.cfg['messages']['antibot'],parse_mode="Markdown")
             await self.sender.sendPhoto(self.request_image())
             await self.sender.sendPhoto(self.request_image())
