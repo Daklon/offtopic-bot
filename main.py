@@ -18,13 +18,12 @@ class OfftopicBotHandler(telepot.aio.helper.ChatHandler):
         self.deny = cfg['parser']['deny']
         self.user_request_id = []
         self.waiting_reponse = False
-        print("spawn")
 
     async def on_chat_message(self, msg):
         print(msg)
         content_type,_,_ = telepot.glance(msg)
         if content_type == "text":
-            if msg['text'] in self.keywords and not self.waiting_reponse:
+            if any(word in msg['text'] for word in self.keywords) and not self.waiting_reponse:
                 self.user_request_id.append(msg['from']['id'])
                 self.waiting_reponse = True
                 await self.sender.sendMessage(self.cfg['messages']['request'],parse_mode="Markdown")
