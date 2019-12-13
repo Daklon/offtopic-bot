@@ -18,7 +18,7 @@ class OfftopicBotHandler(telepot.aio.helper.ChatHandler):
         self.deny = cfg['parser']['deny']
         self.user_request_id = []
         self.waiting_reponse = False
-        self.warmode = True
+        self.warmode = False
         self.management_commands={
                 self.cfg['commands']['enable_war_mode']:self.enable_war_mode,
                 self.cfg['commands']['disable_war_mode']:self.disable_war_mode,
