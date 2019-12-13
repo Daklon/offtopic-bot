@@ -10,6 +10,7 @@ messages:
     accept: A ver que encuentro...
     deny: ¡Besa mi brillante culo metálico!
     group_intro: ¡Hola cachos de carne! Vamos a dejar las cosas claritas, yo no soy un bot, que en mi nombre aparezca la palabra bot es totalmente casual, tampoco hago cosas de bots, sigan a lo suyo
+    antibot: "AQUÍ SOLO MANDO COSAS YO!"
 parser:
     accept:
         - Si
